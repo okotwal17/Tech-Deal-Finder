@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Deal Finder - Demo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles for the demo page */
+        .demo-search {
+            background-color: var(--gray-100);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .search-form {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+        }
+        
+        .search-options {
+            display: flex;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .results-table th, .results-table td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--gray-300);
+        }
+        
+        .results-table th {
+            background-color: var(--gray-200);
+            font-weight: 600;
+        }
+        
+        .results-table tr:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .best-deal {
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--gray-600);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-search-dollar"></i>
+                <h1>Tech Deal Finder</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="index.html#download">Download</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Interactive Demo</h1>
+                <p>Try out the Tech Deal Finder with this interactive demo. Search for products and see how the results are displayed.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-content">
+        <div class="container">
+            <div class="demo-search">
+                <h2>Search for Tech Deals</h2>
+                <p>Enter a product name to search across multiple e-commerce websites.</p>
+                
+                <div class="search-form">
+                    <input type="text" id="search-input" class="search-input" placeholder="e.g., macbook pro, 4K TV, wireless headphones">
+                    <button id="search-button" class="btn btn-primary">Search</button>
+                </div>
+                
+                <div class="search-options">
+                    <div class="option-group">
+                        <label for="max-results">Max results per website:</label>
+                        <select id="max-results" class="search-select">
+                            <option value="3">3</option>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <input type="checkbox" id="save-results" checked>
+                        <label for="save-results">Save results to file</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="search-results">
+                <!-- Results will be displayed here -->
+                <div class="no-results">Enter a search term and click "Search" to see results</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-search-dollar"></i>
+                    <h2>Tech Deal Finder</h2>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#how-it-works">How It Works</a></li>
+                        <li><a href="index.html#download">Download</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> contact@techdealfinder.com</p>
+                    <p><i class="fab fa-github"></i> github.com/yourusername</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Tech Deal Finder. All rights reserved.</p>
+                <p>Licensed under the MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+            
+            // Search function
+            function performSearch() {
+                const query = searchInput.value.trim();
+                
+                if (query === '') {
+                    return;
+                }
+                
+                // Show loading state
+                searchResults.innerHTML = '<div class="loading">Searching for "' + query + '" across multiple websites...</div>';
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Mock results
+                    const mockData = [
+                        {
+                            title: 'Apple MacBook Pro 13.3" with Retina Display, M1 Chip, 8GB Memory, 256GB SSD',
+                            price: 1199.99,
+                            website: 'Best Buy',
+                            url: '#',
+                            bestDeal: true
+                        },
+                        {
+                            title: 'Apple MacBook Pro (13-inch, M1, 2020) 8GB RAM, 256GB SSD - Space Gray',
+                            price: 1249.00,
+                            website: 'Amazon',
+                            url: '#',
+                            bestDeal: false
+                        },
+                        {
+                            title: 'Apple MacBook Pro 13" M1 Chip 8GB 256GB SSD - Silver',
+                            price: 1299.99,
+                            website: 'Walmart',
+                            url: '#',
+                            bestDeal: false
+                        },
+                        {
+                            title: 'Apple MacBook Pro 13.3" Laptop - Apple M1 chip - 8GB Memory - 256GB SSD',
+                            price: 1249.99,
+                            website: 'Newegg',
+                            url: '#',
+                            bestDeal: false
+                        }
+                    ];
+                    
+                    // Display results
+                    displaySearchResults(mockData);
+                }, 1500);
+            }
+            
+            // Display search results
+            function displaySearchResults(results) {
+                searchResults.innerHTML = '';
+                
+                if (results.length === 0) {
+                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                    return;
+                }
+                
+                // Create best deal highlight
+                const bestDeal = results.find(result => result.bestDeal);
+                if (bestDeal) {
+                    const bestDealElement = document.createElement('div');
+                    bestDealElement.className = 'best-deal-highlight';
+                    bestDealElement.innerHTML = `
+                        <h3>BEST DEAL</h3>
+                        <div class="feature-card">
+                            <h3>${bestDeal.title}</h3>
+                            <p><strong>Price:</strong> $${bestDeal.price.toFixed(2)}</p>
+                            <p><strong>Website:</strong> ${bestDeal.website}</p>
+                            <a href="${bestDeal.url}" class="btn btn-primary">View Deal</a>
+                        </div>
+                    `;
+                    searchResults.appendChild(bestDealElement);
+                }
+                
+                // Create results table
+                const tableContainer = document.createElement('div');
+                tableContainer.innerHTML = '<h3>ALL RESULTS</h3>';
+                
+                const table = document.createElement('table');
+                table.className = 'results-table';
+                
+                // Create table header
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Website</th>
+                        <th>Action</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Create table body
+                const tbody = document.createElement('tbody');
+                results.forEach(result => {
+                    const tr = document.createElement('tr');
+                    if (result.bestDeal) {
+                        tr.className = 'best-deal';
+                    }
+                    tr.innerHTML = `
+                        <td>${result.title}</td>
+                        <td>$${result.price.toFixed(2)}</td>
+                        <td>${result.website}</td>
+                        <td><a href="${result.url}" class="btn btn-primary btn-sm">View</a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                
+                tableContainer.appendChild(table);
+                searchResults.appendChild(tableContainer);
+                
+                // Add save notification
+                const saveNotification = document.createElement('div');
+                saveNotification.style.marginTop = '20px';
+                saveNotification.style.color = 'var(--success-color)';
+                saveNotification.innerHTML = '<i class="fas fa-check-circle"></i> Results saved to results_20250421_110500.json';
+                
+                if (document.getElementById('save-results').checked) {
+                    searchResults.appendChild(saveNotification);
+                }
+            }
+            
+            // Event listeners
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

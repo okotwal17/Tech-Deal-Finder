@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Deal Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Tech Deal Finder</h1>
+        <form id="search-form">
+            <div class="form-group">
+                <label for="product_query">What technology product are you looking for?</label>
+                <input type="text" id="product_query" name="product_query" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="max_results">Max results per website:</label>
+                <input type="number" id="max_results" name="max_results" class="form-control" value="5">
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="save_results" name="save_results">
+                <label class="form-check-label" for="save_results">Save results to file</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        
+        <h3>Results</h3>
+        <table id="results-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Website</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        $('#search-form').on('submit', function(event) {
+            event.preventDefault();
+
+            const productQuery = $('#product_query').val();
+            const maxResults = $('#max_results').val();
+            const saveResults = $('#save_results').is(':checked');
+
+            $.ajax({
+                url: '/search',
+                type: 'POST',
+                data: {
+                    product_query: productQuery,
+                    max_results: maxResults,
+                    save_results: saveResults
+                },
+                success: function(response) {
+                    const tbody = $('#results-table tbody');
+                    tbody.empty();  // Clear previous results
+
+                    response.forEach(function(result) {
+                        tbody.append(`
+                            <tr>
+                                <td>${result.title}</td>
+                                <td>${result.price}</td>
+                                <td><a href="${result.url}" target="_blank">${result.website}</a></td>
+                            </tr>
+                        `);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
